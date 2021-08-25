@@ -5,6 +5,9 @@
 
 $font: 'Roboto', sans-serif
 
+.status, .fsmall
+    font-size: calc(6px + 2 * ((100vw - 320px) / 680)) !important
+
 .container
     height: 100vh
 
@@ -12,4 +15,13 @@ $font: 'Roboto', sans-serif
 .table td
     vertical-align: middle!important
 
+$breakpoint-iphone5: 568px
+$breakpoint-tablet: 768px
+$breakpoint-laptop: 900px
+$breakpoint-desktop: 1050px
+$breakpoint-hd: 1080px
+$breakpoint-fullhd: 1440px
 
+@media (max-width: $breakpoint-tablet) 
+    #img-customer, #max_speed, #average_speed
+        display: none

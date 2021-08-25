@@ -3,8 +3,15 @@
   padding: 0;
   box-sizing: border-box; }
 
+.status, .fsmall {
+  font-size: calc(6px + 2 * ((100vw - 320px) / 680)) !important; }
+
 .container {
   height: 100vh; }
 
 .table td {
   vertical-align: middle !important; }
+
+@media (max-width: 768px) {
+  #img-customer, #max_speed, #average_speed {
+    display: none; } }

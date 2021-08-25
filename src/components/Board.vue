@@ -7,8 +7,10 @@
                 <b-form-input></b-form-input>
             </b-form-group>
 
-            <b-form-group class="col-md-4" id="name" label="Name" label-for="name">
-                <b-form-input></b-form-input>
+            <b-form-group class="col-md-4" id="name" label="Name" label-for="filter-name" >
+                <b-input-group>
+                    <b-form-input id="filter-name" v-model="filter" type="search"></b-form-input>
+                </b-input-group>
             </b-form-group>
 
             <b-form-group class="col-md-3" id="current" label="Current Fly" label-for="current">
@@ -21,23 +23,28 @@
         </nav>
 
         <section>
-            <b-table id="droneTable" striped hover :fields="fields" :items="registros" :per-page="perPage" :current-page="currentPage">
+            <b-table id="droneTable" striped hover :fields="fields" :items="registros" :per-page="perPage" :current-page="currentPage" :filter="filter"
+               >
                     <template v-slot:cell(id)="data">
                         <span class="text-info">{{data.item.id}}</span>
                     </template>
                     <template v-slot:cell(name)="data">
-                        <div>
-                            <img :src="data.item.image" alt="" srcset="">
-                            <span class="text-info">{{data.item.name}}</span>
+                        <div class="d-flex align-items-center">
+                            <b-avatar class="mr-2" variant="info" :src="data.item.image" alt="" srcset=""></b-avatar>
+                            <div class="d-flex flex-column">
+                                <b class="d-flex text-info">{{data.item.name}}</b>
+                                <small class="text-info fsmall">{{data.item.address}}</small>
+                            </div>
                         </div>
                         
                     </template>
                     <template v-slot:cell(battery)="data">
-                        <b-progress v-b-tooltip.hover :title="data.item.battery +'%'" @mouseover="hover = true" @mouseleave="hover = false" :value="data.item.battery" :max="100"  animated></b-progress>
+                        <b-progress v-b-popover.hover.top="data.item.battery +'%'" @mouseover="hover = true" @mouseleave="hover = false" :value="data.item.battery" :max="100"  animated></b-progress>
                     </template>
 
                     <template v-slot:cell(max_speed)="data">
                         <span class="text-info">{{data.item.max_speed}}m/h</span>
+                        <!-- <span class="text-info">{parseFloat{{data.item.max_speed}}.toFixed(2)}m/h</span> -->
                     </template>
 
                     <template v-slot:cell(average_speed)="data">
@@ -47,7 +54,9 @@
                         <span class="text-info">{{data.item.fly}}</span>
                     </template>
                     <template v-slot:cell(status)="data">
-                        <button type="button" class="btn btn-primary btn-outline-light" :style="{color: +'white', background: 'lightblue'}">{{data.item.status}}</button>
+                        <button v-if="data.item.status == 'delayed'" type="button" class="status btn btn-warning btn-outline-light text-uppercase" >{{data.item.status}}</button>
+                        <button v-else-if="data.item.status == 'fail'" type="button" class="status btn btn-danger btn-outline-light text-uppercase" >{{data.item.status}}</button>
+                        <button v-else type="button" class="status btn btn-primary text-uppercase" >{{data.item.status}}</button>
                     </template>
             </b-table>
         </section>
@@ -71,28 +80,35 @@ export default class Board extends Vue {
     perPage: number = 20;
     currentPage: number = 1;
     fields: object[] = [
-                { key:'id', label: 'Drone'},
+                { key:'id', label: 'Drone', sortable: true},
                 { key:'name', label:'Customer'},
-                { key:'battery', label:'Batteries'},
+                { key:'battery', label:'Batteries', sortable: true},
                 { key:'max_speed', label:'Max Speed'},
                 { key:'average_speed', label:'Average Speed'},
                 { key:'fly', label:'Current Fly'},
-                { key:'status', label:'Status'}
+                { key:'status', label:'Status', sortable: true}
                 ];
     status: string[] = ['Sucess', 'Delayed', 'Flying', 'Fail', 'Offline','Charging'];
     hover: boolean = false;
-    // statusBackground: string = ""
+    filter = null
 
 
     @Prop() private msg!: string;
     
-
+    // sortOptions() {
+    //     // Create an options list from our fields
+    //     return this.fields
+    //         .filter(f => f.sortable)
+    //         .map(f => {
+    //             return { text: f.label, value: f.key }
+    //         })
+    // }
+    
     mounted(){
         DronesServices.getAll()
         .then((response) => {
             this.registros = response.data
-            this.rows = this.registros.length
-            
+            this.rows = this.registros.length            
         })
         .catch((e) => {
             console.log(e);
@@ -100,24 +116,21 @@ export default class Board extends Vue {
        
     };
     
-    methods(){
-        // statusBackground(): object{
-        //     return console.log('azul')
-        // }
-        // changePage(this.page){
-        //     this.currentPage = this.page;
-        // }
-    };
     
-        
-    
-    
-        
-    
-        
-
-
-
+    // info(item, index, button) {
+    //     this.infoModal.title = `Row index: ${index}`
+    //     this.infoModal.content = JSON.stringify(item, null, 2)
+    //     this.$root.$emit('bv::show::modal', this.infoModal.id, button)
+    // };
+    // resetInfoModal() {
+    //     this.infoModal.title = ''
+    //     this.infoModal.content = ''
+    // };
+    // onFiltered(filteredItems) {
+    //     // Trigger pagination to update the number of buttons/pages due to filtering
+    //     this.totalRows = filteredItems.length
+    //     this.currentPage = 1
+    // }
 }
 </script>
 

@@ -1,6 +1,5 @@
 # dronedelivery
 
-<<<<<<< HEAD
 ## Project setup
 ```
 npm install

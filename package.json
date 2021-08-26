@@ -9,6 +9,7 @@
     "sass": "node-sass -w src/assets/styles/scss -o src/assets/styles/css"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "@popperjs/core": "^2.9.3",
     "@types/bootstrap": "^5.1.2",
     "@types/jquery": "^3.5.6",

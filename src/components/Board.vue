@@ -23,8 +23,10 @@
         </nav>
 
         <section>
-            <b-table id="droneTable" striped hover :fields="fields" :items="registros" :per-page="perPage" :current-page="currentPage" :filter="filter"
-               >
+            <b-table id="droneTable" striped hover :fields="fields" :items="registros" :per-page="perPage" :current-page="currentPage" :filter="filter">
+                    <template v-slot:row()="data">
+                        <b-tr @click="OpenModal(data.item.id)"></b-tr>
+                    </template>
                     <template v-slot:cell(id)="data">
                         <span class="text-info">{{data.item.id}}</span>
                     </template>
@@ -43,15 +45,18 @@
                     </template>
 
                     <template v-slot:cell(max_speed)="data">
-                        <span class="text-info">{{data.item.max_speed}}m/h</span>
-                        <!-- <span class="text-info">{parseFloat{{data.item.max_speed}}.toFixed(2)}m/h</span> -->
+                        <span class="text-info">{{Math.trunc(data.item.max_speed)}}</span><span class="text-info fsmall">.{{decimal(data.item.max_speed)}}m/h</span>
                     </template>
 
                     <template v-slot:cell(average_speed)="data">
-                        <span class="text-info">{{data.item.average_speed}}m/h</span>
+                        <span class="text-info">{{Math.trunc(data.item.average_speed)}}</span><span class="text-info fsmall">.{{decimal(data.item.average_speed)}}m/h</span>
                     </template>
                     <template v-slot:cell(fly)="data">
-                        <span class="text-info">{{data.item.fly}}</span>
+                        <span class="slidecontainer">
+                            <hr v-if="data.item.status == 'charging' || data.item.status == 'offline'"  class="hr-dashed" :value="data.item.fly" type="range" min="0" max="100">
+                            <button class="clearButton" v-else-if="data.item.fly >= 50" v-b-popover.hover.top="'Going - '+ data.item.fly+'%'"><input  class="slider left" :value="data.item.fly" type="range" min="0" max="100" disabled></button>
+                            <button class="clearButton" v-else v-b-popover.hover.top="'Coming - '+ data.item.fly+'%'"><input  class="slider right" :value="data.item.fly" type="range" min="0" max="100" disabled></button>
+                        </span>
                     </template>
                     <template v-slot:cell(status)="data">
                         <button v-if="data.item.status == 'delayed'" type="button" class="status btn btn-warning btn-outline-light text-uppercase" >{{data.item.status}}</button>
@@ -90,7 +95,10 @@ export default class Board extends Vue {
                 ];
     status: string[] = ['Sucess', 'Delayed', 'Flying', 'Fail', 'Offline','Charging'];
     hover: boolean = false;
-    filter = null
+    filter = null;
+    number: number = 0;
+    titleModal: string = ''
+    contentModal: string = ''
 
 
     @Prop() private msg!: string;
@@ -103,7 +111,11 @@ export default class Board extends Vue {
     //             return { text: f.label, value: f.key }
     //         })
     // }
-    
+    public  decimal(num: number): String {
+      let number = (num + "").split(".")[1]
+      return number
+    }
+
     mounted(){
         DronesServices.getAll()
         .then((response) => {
@@ -115,16 +127,16 @@ export default class Board extends Vue {
         });
        
     };
+
+
     
     
-    // info(item, index, button) {
-    //     this.infoModal.title = `Row index: ${index}`
-    //     this.infoModal.content = JSON.stringify(item, null, 2)
-    //     this.$root.$emit('bv::show::modal', this.infoModal.id, button)
-    // };
-    // resetInfoModal() {
-    //     this.infoModal.title = ''
-    //     this.infoModal.content = ''
+    OpenModal(id:any) {
+        console.log('teste')
+    };
+    // ResetModal() {
+    //     this.titleModal = ''
+    //     this.contentModal = ''
     // };
     // onFiltered(filteredItems) {
     //     // Trigger pagination to update the number of buttons/pages due to filtering

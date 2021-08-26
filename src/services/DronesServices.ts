@@ -4,7 +4,6 @@ class DronesServices {
   getAll() {
     return Access.get(`/`);
   }
-
   getDroneId(id: string) {
     return Access.get(`/drones/${id}`);
   }

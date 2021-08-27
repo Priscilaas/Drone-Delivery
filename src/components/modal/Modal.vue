@@ -1,30 +1,38 @@
 <template>
     <div>
     <b-modal id="modal-1" :title="'Detalhes do Drone '+nameUser">
-        <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" label="Nome:" label-for="input-sm">
-            <p class="my-4">{{nameUser}}</p>
-        </b-form-group>
-        <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" label="Endereço:" label-for="input-sm">
-            <p class="my-4">{{addressUser}}</p>
-        </b-form-group>
-        <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" label="Velocidade Média:" label-for="input-sm">
-            <p class="my-4">{{average_speedUser}}</p>
-        </b-form-group>
-        <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" label="Bateria:" label-for="input-sm">
-            <p class="my-4">{{batteryUser}}</p>
-        </b-form-group>
-        <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" label="Voo:" label-for="input-sm">
-            <p class="my-4">{{flyUser}}</p>
-        </b-form-group>
-        <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" label="Imagem:" label-for="input-sm">
+        <div class="row">
+            <label class="text-info col-md-4">Nome:</label>
+            <span class="ml-4 col-md-4">{{nameUser}}</span>
+        </div>
+        <div class="row">
+            <label class="text-info col-md-4">Endereço:</label>
+            <p class="ml-4 col-md-4">{{addressUser}}</p>
+        </div>
+        <div class="row">
+            <label class="text-info col-md-4">Velocidade Média:</label>
+            <p class="ml-4 col-md-4">{{average_speedUser}}</p>
+        </div>
+        <div class="row">
+            <label class="text-info col-md-4">Bateria:</label>
+            <p class="ml-4 col-md-4">{{batteryUser}}</p>
+        </div>
+        <div class="row">
+            <label class="text-info col-md-4">Voo:</label>
+            <p class="ml-4 col-md-4">{{flyUser}}</p>
+        </div>
+        <div class="row">
+            <label class="text-info col-md-4">Imagem:</label>
             <img :src="imageUser" alt="" srcset="">
-        </b-form-group>
-        <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" label="Velocidade Máxima:" label-for="input-sm">
-            <p class="my-4">{{max_speedUser}}</p>
-        </b-form-group>
-        <b-form-group label-cols="4" label-cols-lg="2" label-size="sm" label="Status do Voo:" label-for="input-sm">
-            <p class="my-4">{{statusUser}}</p>
-        </b-form-group>
+        </div>
+        <div class="row">
+            <label class="text-info col-md-4">Velocidade Máxima:</label>
+            <p class="ml-4 col-md-4">{{max_speedUser}}</p>
+        </div>
+        <div class="row">
+            <label class="text-info col-md-4">Status do Voo:</label>
+            <p class="ml-4 col-md-4">{{statusUser}}</p>
+        </div>
     </b-modal>
 
     </div>

@@ -8,7 +8,7 @@
         :max_speedUser="max_speedUser" :statusUser="statusUser"
         />
         
-        <!-- <nav class="d-flex text-info">
+        <nav class="d-flex text-info">
             <b-form-group class="col-md-2" id="id" label="Drone Id" label-for="filter-id">
                 <b-input-group>
                     <b-form-input id="filter-id" v-model="filterId" type="search"></b-form-input>
@@ -17,60 +17,34 @@
 
             <b-form-group class="col-md-4" id="name" label="Name" label-for="filter-name" >
                 <b-input-group>
-                    <b-form-input id="filter-name" v-model="filter" type="search"></b-form-input>
+                    <b-form-input id="filter-name" v-model="filterName" type="search"></b-form-input>
                 </b-input-group>
             </b-form-group>
 
             <b-form-group class="col-md-3" id="current" label="Current Fly" label-for="current">
-                <b-form-select></b-form-select>
+                <b-form-select data-field="status"  id="filter-fly" v-model="filterFly" :options="currentFly"></b-form-select>
             </b-form-group>
 
-            <b-form-group class="col-md-3" id="status" label="Status" label-for="status">
-                <b-form-select data-field="status"  id="status" v-model="status" :options="status"></b-form-select>
-            </b-form-group>
-        </nav> -->
+            <b-form-group class="col-md-2" id="status" label="Status" label-for="status">
+                <b-form-select data-field="status"  id="status" v-model="filterStatus" :options="status"></b-form-select>
+            </b-form-group> 
+
+            <b-form-group class="col-md-1 d-flex align-items-end" >
+                 <button type="button" id="clear" @click="FilterClrear()" class="btn btn-secondary btn-outline-light">Clear</button>
+            </b-form-group>            
+        </nav>
 
         <section>
-            <!-- <b-row>
-                <b-col lg="6" class="my-1">
-                    <b-form-group label="Filter" label-for="filter-input" label-cols-sm="3" label-align-sm="right"
-                    label-size="sm" class="mb-0">
-                    <b-input-group size="sm">
-                        <b-form-input id="filter-input" v-model="filter" type="search" placeholder="Type to Search" ></b-form-input>
-                        <b-input-group-append>
-                            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                    </b-form-group>
-                </b-col>
-
-                <b-col lg="6" class="my-1">
-                    <b-form-group  v-model="sortDirection" label="Filter On" description="Leave all unchecked to filter on all data"
-                    label-cols-sm="3" label-align-sm="right" label-size="sm" class="mb-0" v-slot="{ ariaDescribedby }" >
-                    <b-form-checkbox-group v-model="filterOn" :aria-describedby="ariaDescribedby" class="mt-1" >
-                        <b-form-checkbox value="name">Name</b-form-checkbox>
-                        <b-form-checkbox value="id">Id</b-form-checkbox>
-                        <b-form-checkbox value="isActive">Active</b-form-checkbox>
-                    </b-form-checkbox-group>
-                    </b-form-group>
-                </b-col>
-            </b-row> -->
-            <b-table id="droneTable"  striped hover :fields="fields" :items="registros" :per-page="perPage" :current-page="currentPage" :filter="filter">
-                    <template :slot="`HEAD_${ key }`" v-for="key in fieldKeys" slot-scope="data">
-                        <b>{{ data.label }}</b>
-                        <select class="form-control form-control-sm" @click.stop.prevent v-model="selectVal[key]">
-                            <option :value="undefined">--</option>
-                            <option :value="option" v-for="option in options[key]" :key="option">{{ option }}</option>
-                        </select>
-                    </template>
+            
+            <b-table id="droneTable"  striped hover :fields="fields" :items="filterGet" :per-page="perPage" :current-page="currentPage">
                     <template v-slot:cell(id)="data" >
-                        <span @click="OpenModal(data.item.id)" v-b-modal.modal-1 class="text-info">{{data.item.id}}</span>
+                        <span @click="OpenModal(data.item.id)" v-b-modal.modal-1 id="id" class="text-info">{{data.item.id}}</span>
                     </template>
                     <template v-slot:cell(name)="data" >
-                        <div class="d-flex align-items-center" @click="OpenModal(data.item.id)" v-b-modal.modal-1 >
+                        <div class="d-flex align-items-center" @click="OpenModal(data.item.id)" v-b-modal.modal-1>
                             <b-avatar class="mr-2" variant="info" :src="data.item.image" alt="" srcset=""></b-avatar>
                             <div class="d-flex flex-column">
-                                <b class="d-flex text-info" >{{data.item.name}}</b>
+                                <b class="d-flex text-info" id="name" >{{data.item.name}}</b>
                                 <small class="text-info fsmall">{{data.item.address}}</small>
                             </div>
                         </div>
@@ -94,13 +68,13 @@
                         </span>
                     </template>
                     <template v-slot:cell(fly)="data">
-                        <span class="slidecontainer" @click="OpenModal(data.item.id)" v-b-modal.modal-1>
+                        <span class="slidecontainer" @click="OpenModal(data.item.id)" v-b-modal.modal-1 id="fly">
                             <hr v-if="data.item.status == 'charging' || data.item.status == 'offline'"  class="hr-dashed" :value="data.item.fly" type="range" min="0" max="100">
                             <button class="clearButton" v-else-if="data.item.fly >= 50" v-b-popover.hover.top="'Going - '+ data.item.fly+'%'"><input  class="slider left" :value="data.item.fly" type="range" min="0" max="100" disabled></button>
                             <button class="clearButton" v-else v-b-popover.hover.top="'Coming - '+ data.item.fly+'%'"><input  class="slider right" :value="data.item.fly" type="range" min="0" max="100" disabled></button>
                         </span>
                     </template>
-                    <template v-slot:cell(status)="data" >
+                    <template v-slot:cell(status)="data" id="status" >
                         <button v-if="data.item.status == 'delayed'" type="button" @click="OpenModal(data.item.id)" v-b-modal.modal-1 class="status btn btn-warning btn-outline-light text-uppercase" >{{data.item.status}}</button>
                         <button v-else-if="data.item.status == 'fail'" type="button"  @click="OpenModal(data.item.id)" v-b-modal.modal-1 class="status btn btn-danger btn-outline-light text-uppercase" >{{data.item.status}}</button>
                         <button v-else type="button" class="status btn btn-primary text-uppercase" @click="OpenModal(data.item.id)" v-b-modal.modal-1>{{data.item.status}}</button>
@@ -140,17 +114,10 @@ export default class Board extends Vue {
                 { key:'fly', label:'Current Fly'},
                 { key:'status', label:'Status', sortable: true}
                 ];
-    selectVal: object = {
-      id: undefined,
-      name: undefined,
-      fly: undefined,
-      status: undefined
-    }
-    status: string[] = ['sucess', 'delayed', 'Flying', 'Fail', 'Offline','Charging'];
+    status: string[] = ['Sucess', 'Delayed', 'Flying', 'Fail', 'Offline','Charging'];
+    currentFly: string[] = ['Going', 'Coming', 'All'];
     hover: boolean = false;
-    filter = null;
     number: number = 0;
-    filterId = null;
     showModal: boolean = false;
     idUser: number = 0;
     nameUser: string = '';
@@ -161,7 +128,11 @@ export default class Board extends Vue {
     imageUser: string = '';
     max_speedUser: string = '';
     statusUser: string = '';
-    filterOn: string[] = [];
+    filterId: string = '';
+    filterName: string = '';
+    filterFly: string = '';
+    filterStatus: string = '';
+    
     
     @Prop() private msg!: string;
 
@@ -181,19 +152,6 @@ export default class Board extends Vue {
         this.max_speedUser = ''
         this.statusUser = ''
     };
-    fieldKeys(): Array<String> {
-      return Object.keys(this.fields[0]);
-    };
-    options() {
-      const options = {};
-      this.fieldKeys().forEach((key: String) => {
-        // const vals = this.fields.map((item: Object): String => item[key]);
-        console.log(this.fields)
-        // options[key] = Array.from(new Set(vals));
-      });
-
-      return options;
-    }
     
     public decimal(num: number): String {
       let number = (num + "").split(".")[1]
@@ -216,9 +174,13 @@ export default class Board extends Vue {
         .catch((e) => {
             console.log(e);
         });
+    };
+    public FilterClrear(){
+        this.filterId = '';
+        this.filterName = '';
+        this.filterFly = '';
+        this.filterStatus = '';
     }
-    
-
     mounted(){
         DronesServices.getAll()
         .then((response) => {
@@ -228,9 +190,39 @@ export default class Board extends Vue {
         .catch((e) => {
             console.log(e);
         });
-
-        this.options()
+        
     };
+
+    get filterGet() {
+        if (this.filterId !== '') {
+      	    return this.registros.filter((item) => {
+        	    return item.id == this.filterId
+            })
+        }else if (this.filterName !== '') {
+      	    return this.registros.filter((item) => {
+        	    return item.name.toLowerCase().match(this.filterName.toLowerCase())
+            })
+        }else if(this.filterFly !== '') {
+      	    return this.registros.filter((item) => {
+                if(this.filterFly == 'Going'){
+                    return item.fly >= 50 && !(item.status.toLowerCase()).match('OFFLINE'.toLowerCase())&& !(item.status.toLowerCase()).match('CHARGING'.toLowerCase())
+                }else if(this.filterFly == 'Coming' ){
+                    return item.fly < 50 && !(item.status.toLowerCase()).match('OFFLINE'.toLowerCase())&& !(item.status.toLowerCase()).match('CHARGING'.toLowerCase())
+                }else{
+                    return item.fly
+                }
+            })
+        }else if(this.filterStatus !== '') {
+      	    return this.registros.filter((item) => {
+        	    return (item.status.toLowerCase()).match(this.filterStatus.toLowerCase())
+            });
+        }
+      return this.registros;
+    }
+
+
+
+    
 
 }
 </script>
